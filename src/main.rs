@@ -105,10 +105,20 @@ async fn main(#[shuttle_shared_db::Postgres] pool: PgPool) -> shuttle_axum::Shut
     //async fn main(#[shuttle_shared_db::Postgres] pool: PgPool) -> shuttle_axum::ShuttleAxum {
     let state = MyState { pool };
 
+    sqlx::query(
+        r"CREATE TABLE IF NOT EXISTS persons (
+            name text,
+            number integer
+        )",
+    )
+    .execute(&state.pool)
+    .await
+    .unwrap();
+
     let router = Router::new()
         .route("/", get(hello_world))
         .route("/on_state", get(hello_state))
-        .route("/insert", post(insert_data))
+        .route("/insert", get(insert_data))
         .route("/get", get(get_data))
         .with_state(state);
 
