@@ -1,13 +1,15 @@
 use axum::{
     extract::State,
+    handler::Handler,
     http::StatusCode,
     response::{IntoResponse, Response},
-    routing::get,
+    routing::{get, post},
     Json, Router,
 };
-use rocket::serde::json::json;
+//use rocket::serde::json::json;
 use serde::Serialize;
-use sqlx::PgPool;
+use sqlx::postgres::PgRow;
+use sqlx::{FromRow, PgPool, Row};
 
 // here we show a type that implements Serialize + Send
 #[derive(Serialize)]
@@ -18,6 +20,12 @@ struct Message {
 #[derive(Clone)]
 struct MyState {
     pool: PgPool,
+}
+
+#[derive(Debug, FromRow)]
+struct Person {
+    name: String,
+    number: i32,
 }
 
 enum ApiResponse {
@@ -69,14 +77,40 @@ async fn hello_state() -> Result<ApiResponse, ApiError> {
     Ok(ApiResponse::JsonData(data))
 }
 
+async fn insert_data(State(state): State<MyState>) -> Result<ApiResponse, ApiError> {
+    let name = "TestName";
+    let number = 123567;
+
+    sqlx::query("INSERT INTO persons (name, number) VALUES ($1, $2)")
+        .bind(name)
+        .bind(number)
+        .execute(&state.pool)
+        .await
+        .unwrap();
+
+    Ok(ApiResponse::OK)
+}
+
+async fn get_data(State(state): State<MyState>) -> Result<ApiResponse, ApiError> {
+    let select_query = sqlx::query_as::<_, Person>("SELECT name, number FROM persons");
+    let persons: Vec<Person> = select_query.fetch_all(&state.pool).await.unwrap();
+
+    Ok(ApiResponse::JsonData(vec![Message {
+        message: format!("Retrieved persons: {:?}", persons),
+    }]))
+}
+
 #[shuttle_runtime::main]
-async fn main() -> shuttle_axum::ShuttleAxum {
+async fn main(#[shuttle_shared_db::Postgres] pool: PgPool) -> shuttle_axum::ShuttleAxum {
     //async fn main(#[shuttle_shared_db::Postgres] pool: PgPool) -> shuttle_axum::ShuttleAxum {
-    //let state = MyState { pool };
+    let state = MyState { pool };
 
     let router = Router::new()
         .route("/", get(hello_world))
-        .route("/on_state", get(hello_state));
+        .route("/on_state", get(hello_state))
+        .route("/insert", post(insert_data))
+        .route("/get", get(get_data))
+        .with_state(state);
 
     Ok(router.into())
 }
