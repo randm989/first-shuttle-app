@@ -813,7 +813,7 @@ checksum = "5cc16584ff22b460a382b7feec54b23d2908d858152e5739a120b949293bd74e"
 dependencies = [
  "cc",
  "libc",
- "log",
+ "log 0.4.21",
  "rustversion",
  "windows",
 ]
@@ -1182,6 +1182,7 @@ name = "jrutz-firstapp"
 version = "0.1.0"
 dependencies = [
  "axum 0.7.5",
+ "mustache",
  "rocket",
  "serde",
  "shuttle-axum",
@@ -1246,6 +1247,15 @@ checksum = "3c168f8615b12bc01f9c17e2eb0cc07dcae1940121185446edc3744920e8ef45"
 dependencies = [
  "autocfg",
  "scopeguard",
+]
+
+[[package]]
+name = "log"
+version = "0.3.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e19e8d5c34a3e0e2223db8e060f9e8264aeeb5c5fc64a4ee9965c062211c024b"
+dependencies = [
+ "log 0.4.21",
 ]
 
 [[package]]
@@ -1328,7 +1338,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a4a650543ca06a924e8b371db273b2756685faae30f8487da1b56505a8f78b0c"
 dependencies = [
  "libc",
- "log",
+ "log 0.4.21",
  "wasi",
  "windows-sys 0.48.0",
 ]
@@ -1344,13 +1354,23 @@ dependencies = [
  "futures-util",
  "http 0.2.12",
  "httparse",
- "log",
+ "log 0.4.21",
  "memchr",
  "mime",
  "spin 0.9.8",
  "tokio",
  "tokio-util",
  "version_check",
+]
+
+[[package]]
+name = "mustache"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "51956ef1c5d20a1384524d91e616fb44dfc7d8f249bf696d49c97dd3289ecab5"
+dependencies = [
+ "log 0.3.9",
+ "serde",
 ]
 
 [[package]]
@@ -1919,7 +1939,7 @@ dependencies = [
  "figment",
  "futures",
  "indexmap 2.2.6",
- "log",
+ "log 0.4.21",
  "memchr",
  "multer",
  "num_cpus",
@@ -1971,7 +1991,7 @@ dependencies = [
  "http 0.2.12",
  "hyper 0.14.28",
  "indexmap 2.2.6",
- "log",
+ "log 0.4.21",
  "memchr",
  "pear",
  "percent-encoding",
@@ -2458,7 +2478,7 @@ dependencies = [
  "hashlink",
  "hex",
  "indexmap 2.2.6",
- "log",
+ "log 0.4.21",
  "memchr",
  "once_cell",
  "paste",
@@ -2541,7 +2561,7 @@ dependencies = [
  "hkdf",
  "hmac",
  "itoa",
- "log",
+ "log 0.4.21",
  "md-5",
  "memchr",
  "once_cell",
@@ -2581,7 +2601,7 @@ dependencies = [
  "hmac",
  "home",
  "itoa",
- "log",
+ "log 0.4.21",
  "md-5",
  "memchr",
  "once_cell",
@@ -2611,7 +2631,7 @@ dependencies = [
  "futures-intrusive",
  "futures-util",
  "libsqlite3-sys",
- "log",
+ "log 0.4.21",
  "percent-encoding",
  "serde",
  "sqlx-core",
@@ -2876,7 +2896,7 @@ dependencies = [
  "fallible-iterator",
  "futures-channel",
  "futures-util",
- "log",
+ "log 0.4.21",
  "parking_lot",
  "percent-encoding",
  "phf",
@@ -3014,7 +3034,7 @@ version = "0.1.40"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c3523ab5a71916ccf420eebdf5521fcef02141234bbc0b8a49f2fdc4544364ef"
 dependencies = [
- "log",
+ "log 0.4.21",
  "pin-project-lite",
  "tracing-attributes",
  "tracing-core",
@@ -3047,7 +3067,7 @@ version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ee855f1f400bd0e5c02d150ae5de3840039a3f54b025156404e34c23c03f47c3"
 dependencies = [
- "log",
+ "log 0.4.21",
  "once_cell",
  "tracing-core",
 ]
@@ -3267,7 +3287,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "614d787b966d3989fa7bb98a654e369c762374fd3213d212cfc0251257e747da"
 dependencies = [
  "bumpalo",
- "log",
+ "log 0.4.21",
  "once_cell",
  "proc-macro2",
  "quote",
