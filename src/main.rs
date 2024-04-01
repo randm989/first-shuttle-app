@@ -2,13 +2,13 @@ use axum::{
     extract::State,
     handler::Handler,
     http::StatusCode,
-    response::{IntoResponse, Response},
-    routing::{get},
+    response::{Html, IntoResponse, Response},
+    routing::get,
     Json, Router,
 };
 //use rocket::serde::json::json;
+use ramhorns::{Content, Template};
 use serde::Serialize;
-
 use sqlx::{FromRow, PgPool, Row};
 
 // here we show a type that implements Serialize + Send
@@ -28,10 +28,17 @@ struct Person {
     number: i32,
 }
 
+#[derive(Content)]
+struct PersonContent {
+    title: String,
+    number_data: i32,
+}
+
 enum ApiResponse {
     OK,
     Created,
     JsonData(Vec<Message>),
+    HTML(String),
 }
 
 enum ApiError {
@@ -58,12 +65,26 @@ impl IntoResponse for ApiResponse {
             Self::OK => (StatusCode::OK).into_response(),
             Self::Created => (StatusCode::CREATED).into_response(),
             Self::JsonData(data) => (StatusCode::OK, Json(data)).into_response(),
+            Self::HTML(data) => (StatusCode::OK, Html(data)).into_response(),
         }
     }
 }
 
-async fn hello_world() -> &'static str {
-    "Hello, Postgres world!"
+async fn hello_world() -> Result<ApiResponse, ApiError> {
+    //&'static str {
+    let source = "<h1>{{title}}</h1>\
+{{number_data}}\
+";
+    let person = PersonContent {
+        title: "TestName".into(),
+        number_data: 123i32,
+    };
+
+    let tpl = Template::new(source).unwrap();
+
+    let output = tpl.render(&person);
+
+    Ok(ApiResponse::HTML(output))
 }
 
 async fn hello_state() -> Result<ApiResponse, ApiError> {
