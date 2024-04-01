@@ -2,13 +2,13 @@ use axum::{
     extract::State,
     handler::Handler,
     http::StatusCode,
-    response::{Html, IntoResponse, Response},
-    routing::{get, post},
+    response::{IntoResponse, Response},
+    routing::{get},
     Json, Router,
 };
 //use rocket::serde::json::json;
 use serde::Serialize;
-use sqlx::postgres::PgRow;
+
 use sqlx::{FromRow, PgPool, Row};
 
 // here we show a type that implements Serialize + Send
