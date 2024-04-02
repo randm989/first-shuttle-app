@@ -7,9 +7,10 @@ use axum::{
     Json, Router,
 };
 //use rocket::serde::json::json;
-use ramhorns::{Content, Template};
+use ramhorns::{Content, Ramhorns, Template};
 use serde::Serialize;
 use sqlx::{FromRow, PgPool, Row};
+use tracing::info;
 
 // here we show a type that implements Serialize + Send
 #[derive(Serialize)]
@@ -28,7 +29,7 @@ struct Person {
     number: i32,
 }
 
-#[derive(Content)]
+#[derive(Content, Debug)]
 struct PersonContent {
     title: String,
     number_data: i32,
@@ -80,11 +81,14 @@ async fn hello_world() -> Result<ApiResponse, ApiError> {
         number_data: 123i32,
     };
 
-    let tpl = Template::new(source).unwrap();
+    //let tpl = Template::new(source).unwrap();
+    //let output = tpl.render(&person);
 
-    let output = tpl.render(&person);
+    let tpl: Ramhorns = Ramhorns::from_folder_with_extension("./templates", "mustache").unwrap();
+    let rendered = tpl.get("hangman.mustache").unwrap().render(&person);
+    info!("rendering hangman.mustache with context of {:?}", person);
 
-    Ok(ApiResponse::HTML(output))
+    Ok(ApiResponse::HTML(rendered))
 }
 
 async fn hello_state() -> Result<ApiResponse, ApiError> {

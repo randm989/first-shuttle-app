@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hangman Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    #word-display {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    #guess-input {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hangman Game</h1>
+  <div id="word-display"></div>
+  <div id="guess-input">
+    <label for="guess">Enter a letter: </label>
+    <input type="text" id="guess" maxlength="1">
+    <button onclick="checkGuess()">Guess</button>
+  </div>
+
+  <script>
+    // Array of words for the game
+    const words = ["javascript", "hangman", "html", "css", "game"];
+
+    // Select a random word from the array
+    let selectedWord = words[Math.floor(Math.random() * words.length)];
+
+    // Initialize the display word
+    let displayWord = '_'.repeat(selectedWord.length);
+
+    // Display the initial state of the game
+    document.getElementById('word-display').textContent = displayWord;
+
+    // Function to check the guessed letter
+    function checkGuess() {
+      let guess = document.getElementById('guess').value.toLowerCase();
+      if (guess.length !== 1 || !/[a-z]/.test(guess)) {
+        alert('Please enter a valid single letter!');
+        return;
+      }
+      if (selectedWord.includes(guess)) {
+        for (let i = 0; i < selectedWord.length; i++) {
+          if (selectedWord[i] === guess) {
+            displayWord = displayWord.substr(0, i) + guess + displayWord.substr(i + 1);
+          }
+        }
+        document.getElementById('word-display').textContent = displayWord;
+        if (displayWord === selectedWord) {
+          alert('Congratulations! You guessed the word: ' + selectedWord);
+          resetGame();
+        }
+      } else {
+        alert('Sorry, the word does not contain that letter.');
+      }
+      document.getElementById('guess').value = '';
+    }
+
+    // Function to reset the game
+    function resetGame() {
+      selectedWord = words[Math.floor(Math.random() * words.length)];
+      displayWord = '_'.repeat(selectedWord.length);
+      document.getElementById('word-display').textContent = displayWord;
+    }
+  </script>
+</body>
+</html>
+
